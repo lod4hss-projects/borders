@@ -1,0 +1,190 @@
+@prefix sdh-shacl: <https://sdhss.org/shacl/profiles/>. 
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sdh-short: <https://sdhss.org/ontology/shortcuts/>.
+@prefix sdh-slc: <https://sdhss.org/ontology/social-life/>.
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/>.
+
+sdh-shacl:sdh-slc_C13_Shape a sh:NodeShape ;
+        sh:targetClass sdh-slc:C13 ;
+        sh:name "Social Role Embodiment";
+    
+        sh:property [
+            sh:path rdfs:label ;
+            sh:name "Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path rdfs:comment ;
+            sh:name "Description";
+            sh:datatype xsd:string;
+            sh:order 2; 
+            ];
+
+        sh:property [
+            sh:path sdh-short:P1 ;
+            sh:name "Standard Date-Time";
+            sh:datatype xsd:string;
+            sh:order 3;
+            ];
+    
+        sh:property [
+            sh:path sdh-slc:P26 ;
+            sh:name "is embodiment by" ;
+            sh:class crm:E21 ;
+            sh:maxCount 1 ;
+        ];
+    
+        sh:property [
+            sh:path sdh-slc:P56 ;
+            sh:name "carried out in the context of" ;
+            sh:class crm:E74 ;
+            sh:maxCount 1 ;
+        ];
+    
+        sh:property [
+            sh:path sdh-slc:P33 ;
+            sh:name "is embodiment of" ;
+            sh:class sdh-slc:C12 ;
+            sh:maxCount 1 ;
+        ];
+    
+        sh:property [
+            sh:path sdh-slc:P70 ;
+            sh:name "is embodied in" ;
+            sh:class sdh-slc:C25 ;
+        ];
+    .
+
+sdh-shacl:crm_E74_Shape a sh:NodeShape ;
+        sh:targetClass crm:E74 ;
+        sh:name "Group";
+    
+        sh:property [
+            sh:path rdfs:label ;
+            sh:name "Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path rdfs:comment ;
+            sh:name "Description";
+            sh:datatype xsd:string;
+            sh:order 2; 
+            sh:minCount 1;
+            ];
+    
+    .
+
+sdh-shacl:crm_E21_Shape a sh:NodeShape ;
+        sh:targetClass crm:E21 ;
+        sh:name "Person";
+    
+        sh:property [
+            sh:path rdfs:label ;
+            sh:name "Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path rdfs:comment ;
+            sh:name "Description";
+            sh:datatype xsd:string;
+            sh:order 2; 
+            sh:minCount 1;
+            ];
+    
+    .
+
+sdh-shacl:sdh-slc_C12_Shape a sh:NodeShape ;
+        sh:targetClass sdh-slc:C12 ;
+        sh:name "Actor's Social Role";
+    
+        sh:property [
+            sh:path rdfs:label ;
+            sh:name "Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path rdfs:comment ;
+            sh:name "Description";
+            sh:datatype xsd:string;
+            sh:order 2; 
+            sh:minCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-slc:P19 ;
+            sh:name "is defined in relation to" ;
+            sh:class crm:E74 ;
+            sh:maxCount 1 ;
+        ];
+    
+        sh:property [
+            sh:path sdh-slc:P50 ;
+            sh:name "has social role type" ;
+            sh:class sdh-slc:C32 ;
+            sh:maxCount 1 ;
+        ];
+    .
+
+sdh-shacl:sdh-slc_C32_Shape a sh:NodeShape ;
+        sh:targetClass sdh-slc:C32 ;
+        sh:name "Social Role Type";
+    
+        sh:property [
+            sh:path rdfs:label ;
+            sh:name "Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path rdfs:comment ;
+            sh:name "Description";
+            sh:datatype xsd:string;
+            sh:order 2; 
+            sh:minCount 1;
+            ];
+    
+    .
+
+sdh-shacl:sdh-slc_C25_Shape a sh:NodeShape ;
+        sh:targetClass sdh-slc:C25 ;
+        sh:name "Political or Administrative Entity";
+    
+        sh:property [
+            sh:path rdfs:label ;
+            sh:name "Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path rdfs:comment ;
+            sh:name "Description";
+            sh:datatype xsd:string;
+            sh:order 2; 
+            sh:minCount 1;
+            ];
+    
+    .
