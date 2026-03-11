@@ -1,0 +1,1 @@
+This folder contains all information for helping developing the data model.
