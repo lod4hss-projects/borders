@@ -1,0 +1,14 @@
+[
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "SELECT ?g ?type (count(*) as ?eff)\nWHERE {\n    graph ?g {\n    ?s a ?type\n    }\n}\ngroup by ?type ?g\nlimit 10",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "insert {\n    graph <http://test1.org>\n}",
+    "metadata": {}
+  }
+]
