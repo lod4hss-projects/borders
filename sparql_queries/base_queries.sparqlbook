@@ -2,13 +2,43 @@
   {
     "kind": 2,
     "language": "sparql",
+    "value": "SELECT *\nWHERE {\n    \n    ?s ?p ?o\n    }\n\noffset 500000\nlimit 20",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "SELECT ?g (count(*) as ?n)\nWHERE {\n    GRAPH ?g {\n      ?s ?p ?o\n    }\n}\ngroup by ?g\norder by desc(?n)",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
     "value": "SELECT ?g ?type (count(*) as ?eff)\nWHERE {\n    graph ?g {\n    ?s a ?type\n    }\n}\ngroup by ?type ?g\nlimit 10",
     "metadata": {}
   },
   {
     "kind": 2,
     "language": "sparql",
-    "value": "insert {\n    graph <http://test1.org>\n}",
+    "value": "insert data {\n    graph <http://test1.org/graph1>\n    {<http://test1.org/i1> <http://test1.org/p1> <http://test1.org/i2>}\n}",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "delete data {\n    graph <http://test1.org/graph1>\n    {<http://test1.org/i1> <http://test1.org/p1> <http://test1.org/i2>}\n}",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "select *\nwhere {\n    BIND(<http://test1.org/graph1> as ?g)\n    graph ?g\n    {?s ?p ?o}\n}",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "",
     "metadata": {}
   }
 ]
