@@ -49,6 +49,6 @@ sdh-shacl:sdh_C13_Shape a sh:NodeShape ;
             sh:name "has geocoordinates" ;
             sh:datatype xsd:string;
             sh:maxCount 1 ;
-            h:order 5;
-        ]
+            sh:order 5;
+        ];
     .
