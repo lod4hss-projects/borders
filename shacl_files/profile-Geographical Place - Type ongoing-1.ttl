@@ -24,7 +24,6 @@ sdh-shacl:sdh_C51_Shape a sh:NodeShape ;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
             sh:order 2; 
-            sh:minCount 1;
             sh:maxCount 1;
             ];
     
@@ -41,7 +40,6 @@ sdh-shacl:sdh_C51_Shape a sh:NodeShape ;
             sh:name "Additional Note";
             sh:datatype xsd:string;
             sh:order 4; 
-            sh:minCount 1;
             ];
     
     .
@@ -64,7 +62,6 @@ sdh-shacl:sdh_C13_Shape a sh:NodeShape ;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
             sh:order 2; 
-            sh:minCount 1;
             sh:maxCount 1;
             ];
     
@@ -81,7 +78,6 @@ sdh-shacl:sdh_C13_Shape a sh:NodeShape ;
             sh:name "Additional Note";
             sh:datatype xsd:string;
             sh:order 4; 
-            sh:minCount 1;
             ];
     
         sh:property [
@@ -110,7 +106,6 @@ sdh-shacl:sdh_C14_Shape a sh:NodeShape ;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
             sh:order 2; 
-            sh:minCount 1;
             sh:maxCount 1;
             ];
     
@@ -127,7 +122,6 @@ sdh-shacl:sdh_C14_Shape a sh:NodeShape ;
             sh:name "Additional Note";
             sh:datatype xsd:string;
             sh:order 4; 
-            sh:minCount 1;
             ];
     
         sh:property [

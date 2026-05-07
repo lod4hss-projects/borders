@@ -25,7 +25,6 @@ sdh-shacl:crm_E74_Shape a sh:NodeShape ;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
             sh:order 2; 
-            sh:minCount 1;
             sh:maxCount 1;
             ];
     
@@ -42,7 +41,6 @@ sdh-shacl:crm_E74_Shape a sh:NodeShape ;
             sh:name "Additional Note";
             sh:datatype xsd:string;
             sh:order 4; 
-            sh:minCount 1;
             ];
     
     .
@@ -134,7 +132,6 @@ sdh-shacl:crm_E21_Shape a sh:NodeShape ;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
             sh:order 2; 
-            sh:minCount 1;
             sh:maxCount 1;
             ];
     
@@ -151,7 +148,6 @@ sdh-shacl:crm_E21_Shape a sh:NodeShape ;
             sh:name "Additional Note";
             sh:datatype xsd:string;
             sh:order 4; 
-            sh:minCount 1;
             ];
     
     .
@@ -174,7 +170,6 @@ sdh-shacl:sdh-slc_C12_Shape a sh:NodeShape ;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
             sh:order 2; 
-            sh:minCount 1;
             sh:maxCount 1;
             ];
     
@@ -191,7 +186,6 @@ sdh-shacl:sdh-slc_C12_Shape a sh:NodeShape ;
             sh:name "Additional Note";
             sh:datatype xsd:string;
             sh:order 4; 
-            sh:minCount 1;
             ];
     
         sh:property [
@@ -227,7 +221,6 @@ sdh-shacl:sdh-slc_C32_Shape a sh:NodeShape ;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
             sh:order 2; 
-            sh:minCount 1;
             sh:maxCount 1;
             ];
     
@@ -244,7 +237,6 @@ sdh-shacl:sdh-slc_C32_Shape a sh:NodeShape ;
             sh:name "Additional Note";
             sh:datatype xsd:string;
             sh:order 4; 
-            sh:minCount 1;
             ];
     
     .
@@ -267,7 +259,6 @@ sdh-shacl:sdh-slc_C25_Shape a sh:NodeShape ;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
             sh:order 2; 
-            sh:minCount 1;
             sh:maxCount 1;
             ];
     
@@ -284,7 +275,6 @@ sdh-shacl:sdh-slc_C25_Shape a sh:NodeShape ;
             sh:name "Additional Note";
             sh:datatype xsd:string;
             sh:order 4; 
-            sh:minCount 1;
             ];
     
     .
