@@ -50,5 +50,5 @@ sdh-shacl:sdh_C13_Shape a sh:NodeShape ;
             sh:datatype xsd:string;
             sh:maxCount 1 ;
             h:order 5;
-        ];
+        ]
     .
