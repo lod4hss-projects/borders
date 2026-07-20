@@ -25,8 +25,7 @@ sdh-shacl:crm_E74_Shape a sh:NodeShape ;
             sh:path sdh-short:P10;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
+            sh:order 2;
             ];
     
         sh:property [
@@ -41,7 +40,7 @@ sdh-shacl:crm_E74_Shape a sh:NodeShape ;
             sh:path sdh-short:P12;
             sh:name "Additional Note";
             sh:datatype xsd:string;
-            sh:order 4; 
+            sh:order 4;
             ];
     
     .
@@ -63,8 +62,7 @@ sdh-shacl:sdh-slc_C33_Shape a sh:NodeShape ;
             sh:path sdh-short:P10;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
+            sh:order 2;
             ];
     
         sh:property [
@@ -79,7 +77,7 @@ sdh-shacl:sdh-slc_C33_Shape a sh:NodeShape ;
             sh:path sdh-short:P12;
             sh:name "Additional Note";
             sh:datatype xsd:string;
-            sh:order 4; 
+            sh:order 4;
             ];
     
     .
@@ -101,8 +99,7 @@ sdh-shacl:crm_E21_Shape a sh:NodeShape ;
             sh:path sdh-short:P10;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
+            sh:order 2;
             ];
     
         sh:property [
@@ -117,83 +114,7 @@ sdh-shacl:crm_E21_Shape a sh:NodeShape ;
             sh:path sdh-short:P12;
             sh:name "Additional Note";
             sh:datatype xsd:string;
-            sh:order 4; 
-            ];
-    
-    .
-
-sdh-shacl:sdh_C17_Shape a sh:NodeShape ;
-        sh:targetClass sdh:C17 ;
-        sh:name "Construction";
-    
-        sh:property [
-            sh:path sdh-short:P9;
-            sh:name "Standard Label";
-            sh:datatype xsd:string;
-            sh:order 1; 
-            sh:minCount 1;
-            sh:maxCount 1;
-            ];
-    
-        sh:property [
-            sh:path sdh-short:P10;
-            sh:name "Alternative Label";
-            sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
-            ];
-    
-        sh:property [
-            sh:path sdh-short:P11;
-            sh:name "Definition";
-            sh:datatype xsd:string;
-            sh:order 3; 
-            sh:minCount 1;
-            ];
-    
-        sh:property [
-            sh:path sdh-short:P12;
-            sh:name "Additional Note";
-            sh:datatype xsd:string;
-            sh:order 4; 
-            ];
-    
-    .
-
-sdh-shacl:sdh_C13_Shape a sh:NodeShape ;
-        sh:targetClass sdh:C13 ;
-        sh:name "Geographical Place";
-    
-        sh:property [
-            sh:path sdh-short:P9;
-            sh:name "Standard Label";
-            sh:datatype xsd:string;
-            sh:order 1; 
-            sh:minCount 1;
-            sh:maxCount 1;
-            ];
-    
-        sh:property [
-            sh:path sdh-short:P10;
-            sh:name "Alternative Label";
-            sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
-            ];
-    
-        sh:property [
-            sh:path sdh-short:P11;
-            sh:name "Definition";
-            sh:datatype xsd:string;
-            sh:order 3; 
-            sh:minCount 1;
-            ];
-    
-        sh:property [
-            sh:path sdh-short:P12;
-            sh:name "Additional Note";
-            sh:datatype xsd:string;
-            sh:order 4; 
+            sh:order 4;
             ];
     
     .
@@ -214,8 +135,7 @@ sdh-shacl:sdh-slc_C28_Shape a sh:NodeShape ;
             sh:path sdh-short:P10;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
+            sh:order 2;
             ];
     
         sh:property [
@@ -229,14 +149,28 @@ sdh-shacl:sdh-slc_C28_Shape a sh:NodeShape ;
             sh:path sdh-short:P12;
             sh:name "Additional Note";
             sh:datatype xsd:string;
-            sh:order 4; 
+            sh:order 4;
             ];
 
         sh:property [
             sh:path sdh-short:P1 ;
-            sh:name "Standard Date-Time";
+            sh:name "at some time within";
             sh:datatype xsd:string;
             sh:order 5;
+            ];
+
+        sh:property [
+            sh:path sdh-short:P4 ;
+            sh:name "begins on";
+            sh:datatype xsd:string;
+            sh:order 6;
+            ];
+
+        sh:property [
+            sh:path sdh-short:P7 ;
+            sh:name "ends on";
+            sh:datatype xsd:string;
+            sh:order 7;
             ];
     
         sh:property [
@@ -280,4 +214,78 @@ sdh-shacl:sdh-slc_C28_Shape a sh:NodeShape ;
             sh:class sdh-slc:C33 ;
             sh:maxCount 1 ;
         ];
+    .
+
+sdh-shacl:sdh_C17_Shape a sh:NodeShape ;
+        sh:targetClass sdh:C17 ;
+        sh:name "Construction";
+    
+        sh:property [
+            sh:path sdh-short:P9;
+            sh:name "Standard Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P10;
+            sh:name "Alternative Label";
+            sh:datatype xsd:string;
+            sh:order 2;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P11;
+            sh:name "Definition";
+            sh:datatype xsd:string;
+            sh:order 3; 
+            sh:minCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P12;
+            sh:name "Additional Note";
+            sh:datatype xsd:string;
+            sh:order 4;
+            ];
+    
+    .
+
+sdh-shacl:sdh_C13_Shape a sh:NodeShape ;
+        sh:targetClass sdh:C13 ;
+        sh:name "Geographical Place";
+    
+        sh:property [
+            sh:path sdh-short:P9;
+            sh:name "Standard Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P10;
+            sh:name "Alternative Label";
+            sh:datatype xsd:string;
+            sh:order 2;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P11;
+            sh:name "Definition";
+            sh:datatype xsd:string;
+            sh:order 3; 
+            sh:minCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P12;
+            sh:name "Additional Note";
+            sh:datatype xsd:string;
+            sh:order 4;
+            ];
+    
     .
