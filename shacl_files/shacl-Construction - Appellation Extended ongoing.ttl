@@ -1,0 +1,239 @@
+@prefix sdh-shacl: <https://sdhss.org/shacl/profiles/>. 
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sdh-short: <https://sdhss.org/ontology/shortcuts/>.
+@prefix sdh: <https://sdhss.org/ontology/core/>.
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/>.
+
+sdh-shacl:crm_E41_Shape a sh:NodeShape ;
+        sh:targetClass crm:E41 ;
+        sh:name "Appellation";
+    
+        sh:property [
+            sh:path sdh-short:P9;
+            sh:name "Standard Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P10;
+            sh:name "Alternative Label";
+            sh:datatype xsd:string;
+            sh:order 2;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P11;
+            sh:name "Definition";
+            sh:datatype xsd:string;
+            sh:order 3; 
+            sh:minCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P12;
+            sh:name "Additional Note";
+            sh:datatype xsd:string;
+            sh:order 4;
+            ];
+    
+    .
+
+sdh-shacl:sdh_C12_Shape a sh:NodeShape ;
+        sh:targetClass sdh:C12 ;
+        sh:name "Appellation in a Language Type";
+    
+        sh:property [
+            sh:path sdh-short:P9;
+            sh:name "Standard Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P10;
+            sh:name "Alternative Label";
+            sh:datatype xsd:string;
+            sh:order 2;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P11;
+            sh:name "Definition";
+            sh:datatype xsd:string;
+            sh:order 3; 
+            sh:minCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P12;
+            sh:name "Additional Note";
+            sh:datatype xsd:string;
+            sh:order 4;
+            ];
+    
+    .
+
+sdh-shacl:crm_E56_Shape a sh:NodeShape ;
+        sh:targetClass crm:E56 ;
+        sh:name "Language";
+    
+        sh:property [
+            sh:path sdh-short:P9;
+            sh:name "Standard Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P10;
+            sh:name "Alternative Label";
+            sh:datatype xsd:string;
+            sh:order 2;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P11;
+            sh:name "Definition";
+            sh:datatype xsd:string;
+            sh:order 3; 
+            sh:minCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P12;
+            sh:name "Additional Note";
+            sh:datatype xsd:string;
+            sh:order 4;
+            ];
+    
+    .
+
+sdh-shacl:sdh_C17_Shape a sh:NodeShape ;
+        sh:targetClass sdh:C17 ;
+        sh:name "Construction";
+    
+        sh:property [
+            sh:path sdh-short:P9;
+            sh:name "Standard Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:minCount 1;
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P10;
+            sh:name "Alternative Label";
+            sh:datatype xsd:string;
+            sh:order 2;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P11;
+            sh:name "Definition";
+            sh:datatype xsd:string;
+            sh:order 3; 
+            sh:minCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P12;
+            sh:name "Additional Note";
+            sh:datatype xsd:string;
+            sh:order 4;
+            ];
+    
+    .
+
+sdh-shacl:sdh_C11_Shape a sh:NodeShape ;
+        sh:targetClass sdh:C11 ;
+        sh:name "Appellation in a Language";
+    
+        sh:property [
+            sh:path sdh-short:P9;
+            sh:name "Standard Label";
+            sh:datatype xsd:string;
+            sh:order 1; 
+            sh:maxCount 1;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P10;
+            sh:name "Alternative Label";
+            sh:datatype xsd:string;
+            sh:order 2;
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P11;
+            sh:name "Definition";
+            sh:datatype xsd:string;
+            sh:order 3; 
+            ];
+    
+        sh:property [
+            sh:path sdh-short:P12;
+            sh:name "Additional Note";
+            sh:datatype xsd:string;
+            sh:order 4;
+            ];
+
+        sh:property [
+            sh:path sdh-short:P1 ;
+            sh:name "at some time within";
+            sh:datatype xsd:string;
+            sh:order 5;
+            ];
+
+        sh:property [
+            sh:path sdh-short:P4 ;
+            sh:name "begins on";
+            sh:datatype xsd:string;
+            sh:order 6;
+            ];
+
+        sh:property [
+            sh:path sdh-short:P7 ;
+            sh:name "ends on";
+            sh:datatype xsd:string;
+            sh:order 7;
+            ];
+    
+        sh:property [
+            sh:path sdh:P13 ;
+            sh:name "refers to name" ;
+            sh:class crm:E41 ;
+            sh:maxCount 1 ;
+        ];
+    
+        sh:property [
+            sh:path sdh:P12 ;
+            sh:name "used in language" ;
+            sh:class crm:E56 ;
+            sh:maxCount 1 ;
+        ];
+    
+        sh:property [
+            sh:path sdh:P11 ;
+            sh:name "is appellation for language of" ;
+            sh:class sdh:C17 ;
+            sh:maxCount 1 ;
+        ];
+    
+        sh:property [
+            sh:path sdh:P14 ;
+            sh:name "has appellation for language type" ;
+            sh:class sdh:C12 ;
+            sh:maxCount 1 ;
+        ];
+    .
