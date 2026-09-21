@@ -42,16 +42,16 @@ sdh-shacl:sdh_C17_Shape a sh:NodeShape ;
             ];
     
         sh:property [
-            sh:path sdh:P107 ;
-            sh:name "is located on" ;
-            sh:class sdh:C13 ;
+            sh:path sdh:P96 ;
+            sh:name "has construction type" ;
+            sh:class sdh:C18 ;
             sh:maxCount 1 ;
         ];
     .
 
-sdh-shacl:sdh_C13_Shape a sh:NodeShape ;
-        sh:targetClass sdh:C13 ;
-        sh:name "Geographical Place";
+sdh-shacl:sdh_C18_Shape a sh:NodeShape ;
+        sh:targetClass sdh:C18 ;
+        sh:name "Construction Type";
     
         sh:property [
             sh:path sdh-short:P9;
