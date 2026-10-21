@@ -4,68 +4,13 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix sdh-short: <https://sdhss.org/ontology/shortcuts/>.
+@prefix sdh: <https://sdhss.org/ontology/core/>.
 @prefix crm: <http://www.cidoc-crm.org/cidoc-crm/>.
-@prefix sdh-slc: <https://sdhss.org/ontology/social-life-core/>.
+@prefix crm-sup: <https://sdhss.org/ontology/crm-supplement/>.
 
-sdh-shacl:sdh-slc_C23_Shape a sh:NodeShape ;
-        sh:targetClass sdh-slc:C23 ;
-        sh:name "Religious Identity";
-    
-        sh:property [
-            sh:path sdh-short:P9;
-            sh:name "Standard Label";
-            sh:datatype xsd:string;
-            sh:order 1; 
-            sh:maxCount 1;
-            ];
-    
-        sh:property [
-            sh:path sdh-short:P10;
-            sh:name "Alternative Label";
-            sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
-            ];
-    
-        sh:property [
-            sh:path sdh-short:P11;
-            sh:name "Definition";
-            sh:datatype xsd:string;
-            sh:order 3; 
-            ];
-    
-        sh:property [
-            sh:path sdh-short:P12;
-            sh:name "Additional Note";
-            sh:datatype xsd:string;
-            sh:order 4; 
-            ];
-
-        sh:property [
-            sh:path sdh-short:P1 ;
-            sh:name "Standard Date-Time";
-            sh:datatype xsd:string;
-            sh:order 5;
-            ];
-    
-        sh:property [
-            sh:path sdh-slc:P36 ;
-            sh:name "pertains to" ;
-            sh:class crm:E21 ;
-            sh:maxCount 1 ;
-        ];
-    
-        sh:property [
-            sh:path sdh-slc:P35 ;
-            sh:name "is defined by" ;
-            sh:class sdh-slc:C24 ;
-            sh:maxCount 1 ;
-        ];
-    .
-
-sdh-shacl:crm_E21_Shape a sh:NodeShape ;
-        sh:targetClass crm:E21 ;
-        sh:name "Person";
+sdh-shacl:crm_E74_Shape a sh:NodeShape ;
+        sh:targetClass crm:E74 ;
+        sh:name "Group";
     
         sh:property [
             sh:path sdh-short:P9;
@@ -80,8 +25,7 @@ sdh-shacl:crm_E21_Shape a sh:NodeShape ;
             sh:path sdh-short:P10;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
+            sh:order 2;
             ];
     
         sh:property [
@@ -99,11 +43,17 @@ sdh-shacl:crm_E21_Shape a sh:NodeShape ;
             sh:order 4; 
             ];
     
+        sh:property [
+            sh:path sdh:P99 ;
+            sh:name "has group type" ;
+            sh:class crm-sup:C9 ;
+            sh:maxCount 1 ;
+        ];
     .
 
-sdh-shacl:sdh-slc_C24_Shape a sh:NodeShape ;
-        sh:targetClass sdh-slc:C24 ;
-        sh:name "Religion or Religious Denomination";
+sdh-shacl:crm-sup_C9_Shape a sh:NodeShape ;
+        sh:targetClass crm-sup:C9 ;
+        sh:name "Group Type";
     
         sh:property [
             sh:path sdh-short:P9;
@@ -118,8 +68,7 @@ sdh-shacl:sdh-slc_C24_Shape a sh:NodeShape ;
             sh:path sdh-short:P10;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
+            sh:order 2;
             ];
     
         sh:property [
