@@ -4,13 +4,12 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix sdh-short: <https://sdhss.org/ontology/shortcuts/>.
-@prefix sdh: <https://sdhss.org/ontology/core/>.
 @prefix crm: <http://www.cidoc-crm.org/cidoc-crm/>.
-@prefix crm-sup: <https://sdhss.org/ontology/crm-supplement/>.
+@prefix sdh-slc: <https://sdhss.org/ontology/social-life-core/>.
 
-sdh-shacl:crm_E74_Shape a sh:NodeShape ;
-        sh:targetClass crm:E74 ;
-        sh:name "Group";
+sdh-shacl:crm_E21_Shape a sh:NodeShape ;
+        sh:targetClass crm:E21 ;
+        sh:name "Person";
     
         sh:property [
             sh:path sdh-short:P9;
@@ -25,8 +24,7 @@ sdh-shacl:crm_E74_Shape a sh:NodeShape ;
             sh:path sdh-short:P10;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
+            sh:order 2;
             ];
     
         sh:property [
@@ -45,16 +43,15 @@ sdh-shacl:crm_E74_Shape a sh:NodeShape ;
             ];
     
         sh:property [
-            sh:path sdh:P99 ;
-            sh:name "has group type" ;
-            sh:class crm-sup:C9 ;
-            sh:maxCount 1 ;
+            sh:path sdh-slc:P23 ;
+            sh:name "has gender" ;
+            sh:class sdh-slc:C11 ;
         ];
     .
 
-sdh-shacl:crm-sup_C9_Shape a sh:NodeShape ;
-        sh:targetClass crm-sup:C9 ;
-        sh:name "Group Type";
+sdh-shacl:sdh-slc_C11_Shape a sh:NodeShape ;
+        sh:targetClass sdh-slc:C11 ;
+        sh:name "Gender";
     
         sh:property [
             sh:path sdh-short:P9;
@@ -69,8 +66,7 @@ sdh-shacl:crm-sup_C9_Shape a sh:NodeShape ;
             sh:path sdh-short:P10;
             sh:name "Alternative Label";
             sh:datatype xsd:string;
-            sh:order 2; 
-            sh:maxCount 1;
+            sh:order 2;
             ];
     
         sh:property [
