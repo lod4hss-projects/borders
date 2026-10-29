@@ -1,0 +1,41 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix sdh-short: <https://sdhss.org/ontology/shortcuts/>.
+@prefix sdh-act: <https://sdhss.org/ontology/human-activity/>.
+@prefix sdh: <https://sdhss.org/ontology/core/>.
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/>.
+@prefix sdh-slc: <https://sdhss.org/ontology/social-life-core/>.
+@prefix sdh-sls: <https://sdhss.org/ontology/social-life-specific/>.
+
+
+<#fligth-1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "borders.v_flights" ];
+    rr:subjectMap [
+
+        # keep the full URI for the template
+        rr:template "https://borders.lod4hss.org/resource/flight-{id_flight}";
+        rr:termType rr:IRI;
+        rr:class sdh-act:C5;
+    ];
+    rr:predicateObjectMap [
+        # moved from
+        rr:predicate sdh:P60;
+        rr:objectMap [ 
+            rr:column "origin_uri";
+            rr:termType rr:IRI 
+        ];
+    ];
+    rr:predicateObjectMap [
+        # moved to
+        rr:predicate sdh:P61;
+        rr:objectMap [ 
+            rr:column "destination_uri";
+            rr:termType rr:IRI 
+        ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P1;
+        rr:objectMap [ rr:column "flight_date" ;
+                rr:dataType xsd:integer];    
+    ].

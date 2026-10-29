@@ -1,0 +1,339 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix sdh-short: <https://sdhss.org/ontology/shortcuts/>.
+@prefix sdh: <https://sdhss.org/ontology/core/>.
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/>.
+@prefix swel: <https://elites-suisses.lod4hss.org/resource/>.
+@prefix sdh-slc: <https://sdhss.org/ontology/social-life-core/>.
+@prefix sdh-sls: <https://sdhss.org/ontology/social-life-specific/>.
+
+
+<#identite1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.identite" ];
+    rr:subjectMap [
+        # rr:constant swel: ; does not work,
+        # keep the full URI for the template
+        rr:template "https://elites-suisses.lod4hss.org/resource/p{id}";
+        rr:termType rr:IRI;
+        rr:class crm:E21;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P9;
+        rr:objectMap [ rr:column "name_forename" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-slc:P23;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/gen{fk_gender}" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P2;
+        rr:objectMap [ rr:column "birth_year" ;
+                rr:dataType xsd:integer];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P13;
+        rr:objectMap [ rr:column "death_year" ;
+                rr:dataType xsd:integer];
+    ].
+
+<#identifier1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.v_same_as" ];
+    rr:subjectMap [
+        rr:template "https://elites-suisses.lod4hss.org/resource/p{\"zkf_ID_linked\"}";
+        rr:termType rr:IRI;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate owl:sameAs;
+        rr:objectMap [ rr:column "same_as" ;
+                        rr:termType rr:IRI ];
+    ]
+    .
+
+<#gender1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.t_gender" ];
+    rr:subjectMap [
+        # rr:constant swel: ; does not work,
+        # keep the full URI for the template
+        rr:template "https://elites-suisses.lod4hss.org/resource/gen{pk_gender}";
+        rr:termType rr:IRI;
+        rr:class sdh-slc:C11;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P9;
+        rr:objectMap [ rr:column "name" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P11;
+        rr:objectMap [ rr:column "description" ];
+    ];
+       rr:predicateObjectMap [
+        rr:predicate owl:sameAs;
+        rr:objectMap [ 
+            rr:column "wikidata_uri";
+            rr:termType rr:IRI 
+        ];
+    ].
+
+
+
+<#birth1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.v_person_birth" ];
+    rr:subjectMap [
+        # rr:constant swel: ; does not work,
+        # keep the full URI for the template
+        rr:template "https://elites-suisses.lod4hss.org/resource/{id_birth}";
+        rr:termType rr:IRI;
+        rr:class crm:E67;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate crm:P98;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/p{child}" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate crm:P96;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/p{mother}" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate crm:P97;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/p{father}" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P1;
+        rr:objectMap [ rr:column "birth_year" ;
+                rr:dataType xsd:integer];
+    ];            
+    rr:predicateObjectMap [
+        rr:predicate sdh:P6;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/gp{fk_birth_place}" ];
+    ].
+
+
+
+<#soc_relation_type1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.t_social_relationship_type" ];
+    rr:subjectMap [
+        # rr:constant swel: ; does not work,
+        # keep the full URI for the template
+        rr:template "https://elites-suisses.lod4hss.org/resource/srt{pk_social_relationship_type}";
+        rr:class sdh-slc:C4;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P9;
+        rr:objectMap [ rr:column "name" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P11;
+        rr:objectMap [ rr:column "description" ];
+    ];    
+    rr:predicateObjectMap [
+        rr:predicate owl:sameAs;
+        rr:objectMap [ 
+            rr:column "wikidata_uri";
+            rr:termType rr:IRI 
+        ];
+    ] .
+
+
+<#marriage1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.v_mariage" ];
+    rr:subjectMap [
+        # rr:constant swel: ; does not work,
+        # keep the full URI for the template
+        rr:template "https://elites-suisses.lod4hss.org/resource/mar{id}";
+        # rr:termType rr:IRI;
+        rr:class sdh-slc:C3;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-slc:P15;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/p{femme}" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-slc:P15;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/p{homme}" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-slc:P16;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/srt{fk_social_relationship_type}" ];
+    ].
+
+
+
+<#group-1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.t_group" ];
+    rr:subjectMap [
+        rr:template "https://elites-suisses.lod4hss.org/resource/g{pk_group}";
+        rr:termType rr:IRI;
+        rr:class crm:E74;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P9;
+        rr:objectMap [ rr:column "name_standard" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P11;
+        rr:objectMap [ rr:column "definition" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh:P99;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/g-ty{fk_group_type}" ];
+    ].
+
+
+<#study-discipline-1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.t_study_discipline" ];
+    rr:subjectMap [
+        rr:template "https://elites-suisses.lod4hss.org/resource/stu-dis{id}";
+        rr:termType rr:IRI;
+        rr:class sdh-sls:C9;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P9;
+        rr:objectMap [ rr:column "categorie_norm" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P11;
+        rr:objectMap [ rr:column "definition" ];
+    ].
+
+
+<#study-title-1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.t_study_title" ];
+    rr:subjectMap [
+        rr:template "https://elites-suisses.lod4hss.org/resource/stu-tit{id}";
+        rr:termType rr:IRI;
+        rr:class sdh-sls:C8;
+    ];
+    rr:predicateObjectMap [
+        # standard label
+        rr:predicate sdh-short:P9;
+        rr:objectMap [ rr:column "study_title" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P11;
+        rr:objectMap [ rr:column "definition" ];
+    ].
+
+<#geo-place-kind-1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.t_geo_place_kind" ];
+    rr:subjectMap [
+        rr:template "https://elites-suisses.lod4hss.org/resource/gpk{pk_geo_place_kind}";
+        rr:termType rr:IRI;
+        rr:class sdh:C51;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P9;
+        rr:objectMap [ rr:column "name_standard" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P11;
+        rr:objectMap [ rr:column "definition" ];
+    ].
+
+
+<#geo-place-1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.t_geo_place" ];
+    rr:subjectMap [
+        rr:template "https://elites-suisses.lod4hss.org/resource/gp{pk_geo_place}";
+        rr:termType rr:IRI;
+        rr:class sdh:C13;
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P9;
+        rr:objectMap [ rr:column "name_standard" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P11;
+        rr:objectMap [ rr:column "definition" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh:P99;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/gpk{fk_geo_place_kind}" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate sdh-short:P14;
+        rr:objectMap [ rr:column "geocoordinates" ];
+    ];
+    rr:predicateObjectMap [
+        rr:predicate owl:sameAs;
+        rr:objectMap [ 
+            rr:column "wikidata_uri";
+            rr:termType rr:IRI 
+        ];
+    ].
+
+
+<#obtaining-a-study-title-1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.v_education" ];
+    rr:subjectMap [
+        # rr:constant swel: ; does not work,
+        # keep the full URI for the template
+        rr:template "https://elites-suisses.lod4hss.org/resource/{id_edu}";
+        # rr:termType rr:IRI;
+        rr:class sdh-sls:C7;
+    ];
+    rr:predicateObjectMap [
+        # was obtained by 
+        rr:predicate sdh-sls:P9;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/p{id_person}" ];
+    ];
+    rr:predicateObjectMap [
+        # is obtention of study title
+        rr:predicate sdh-sls:P10;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/stu-tit{fk_study_title}" ];
+    ];
+    rr:predicateObjectMap [
+        # has academic supervisor
+        rr:predicate sdh-sls:P11;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/p{id_directeur}" ];
+    ];
+    rr:predicateObjectMap [
+        # is obtention in
+        rr:predicate sdh-sls:P25;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/stu-dis{fk_study_discipline}" ];
+    ];
+    rr:predicateObjectMap [
+        # obtention date, at some time within
+        rr:predicate sdh-short:P1;
+        rr:objectMap [ rr:column "grade_date" ;
+                rr:dataType xsd:integer];
+    ];
+    rr:predicateObjectMap [
+        # is delivered by group
+        rr:predicate sdh-sls:P17;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/g{pk_group}" ];
+    ].
+
+
+
+<#membership-1> a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "elites_suisses.v_membership" ];
+    rr:subjectMap [
+        # rr:constant swel: ; does not work,
+        # keep the full URI for the template
+        rr:template "https://elites-suisses.lod4hss.org/resource/memb{id}";
+        # rr:termType rr:IRI;
+        rr:class sdh-slc:C5;
+    ];
+    rr:predicateObjectMap [
+        # was obtained by 
+        rr:predicate sdh-slc:P1;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/p{fk_person}" ];
+    ];
+    rr:predicateObjectMap [
+        # obtention date, at some time within
+        rr:predicate sdh-short:P4;
+        rr:objectMap [ rr:column "begin_year" ;
+                rr:dataType xsd:integer];
+    ];
+    rr:predicateObjectMap [
+        # obtention date, at some time within
+        rr:predicate sdh-short:P7;
+        rr:objectMap [ rr:column "end_year" ;
+                rr:dataType xsd:integer];
+    ];
+    rr:predicateObjectMap [
+        # is delivered by group
+        rr:predicate sdh-slc:P2;
+        rr:objectMap [ rr:template "https://elites-suisses.lod4hss.org/resource/g{fk_group}" ];
+    ].
