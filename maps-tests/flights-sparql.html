@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>European Air Routes 1930–1950</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; }
+        #map { height: calc(100vh - 70px); width: 100%; }
+
+        .timeline-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.15);
+        }
+        .timeline-bar label {
+            font-weight: 700;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .timeline-bar input[type="range"] {
+            flex: 1;
+            height: 6px;
+            cursor: pointer;
+        }
+        .timeline-bar .date-display {
+            font-size: 15px;
+            font-weight: 600;
+            min-width: 140px;
+            text-align: right;
+            color: #2c3e50;
+        }
+        .play-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 14px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .play-btn:hover { background: #34495e; }
+
+        .legend {
+            position: absolute;
+            bottom: 80px;
+            left: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            font-size: 12px;
+        }
+        .legend .line-sample {
+            display: inline-block;
+            width: 40px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .legend-item { margin: 4px 0; }
+
+        .info-box {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.92);
+            padding: 10px 14px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            font-size: 12px;
+            max-width: 260px;
+        }
+        .info-box h3 { font-size: 14px; margin-bottom: 4px; }
+        .info-box .stat { font-size: 13px; color: #555; }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+            background: rgba(255,255,255,0.95);
+            padding: 24px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .loading.error { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <div class="loading" id="loading">⏳ Loading data from SPARQL endpoint…</div>
+
+    <div class="info-box">
+        <h3>European Air Routes</h3>
+        <div class="stat" id="stat-routes">Routes: —</div>
+        <div class="stat" id="stat-flights">Total flights: —</div>
+    </div>
+
+    <div class="legend">
+        <strong>Flights / month</strong>
+        <div class="legend-item"><span class="line-sample" style="border-top: 2px solid #7fb3d5;"></span> 1-5</div>
+        <div class="legend-item"><span class="line-sample" style="border-top: 3px solid #82c9a0;"></span> 6–10</div>
+        <div class="legend-item"><span class="line-sample" style="border-top: 5px solid #f0c27f;"></span> 11–20</div>
+        <div class="legend-item"><span class="line-sample" style="border-top: 7px solid #df6456;"></span> 20+</div>
+    </div>
+
+    <div class="timeline-bar">
+        <label>Time:</label>
+        <input type="range" id="time-slider" min="0" max="0" value="0" step="1">
+        <div class="date-display" id="date-label">—</div>
+        <button class="play-btn" id="play-btn">▶ Play</button>
+    </div>
+
+    <script>
+        // ─── SPARQL QUERY ───────────────────────────────────────────────────
+        const SPARQL_ENDPOINT = 'https://open-gdb.lod4hss.org/repositories/borders';
+
+        const QUERY = `
+prefix sdh-act: <https://sdhss.org/ontology/human-activity/>
+prefix sdh-short: <https://sdhss.org/ontology/shortcuts/>
+prefix sdh: <https://sdhss.org/ontology/core/>
+
+select ?flight_month ?number_flights  
+    ?placeLabel_from ?geocoord_from ?place_from
+    ?placeLabel_to ?geocoord_to ?place_to
+WHERE {
+
+{select  ?flight_month ?place_from ?place_to (count(*) as ?number_flights)
+where {?flight a sdh-act:C5;
+             sdh-short:P1 ?flight_date;
+             sdh:P60 ?place_from;
+             sdh:P61 ?place_to.
+       BIND(SUBSTR(?flight_date, 1, 7) AS ?flight_month)
+       
+       }
+group by ?flight_month ?place_from ?place_to
+}
+
+  ?place_from sdh-short:P14 ?geocoord_from.
+  ?place_from sdh-short:P9 ?placeLabel_from.
+  
+  ?place_to sdh-short:P14 ?geocoord_to.
+  ?place_to sdh-short:P9 ?placeLabel_to.
+}
+        `.trim();
+
+        // ─── PARSE COORDINATES ──────────────────────────────────────────────
+        // Handles formats like: "POINT(lon lat)", "lat,lon", "lat lon", "lat;lon"
+        function parseGeoCoord(coordStr) {
+            if (!coordStr) return null;
+
+            // WKT POINT format: POINT(lon lat) or POINT (lon lat)
+            const pointMatch = coordStr.match(/POINT\s*\(\s*([-\d.]+)\s+([-\d.]+)\s*\)/i);
+            if (pointMatch) {
+                return { lat: parseFloat(pointMatch[2]), lon: parseFloat(pointMatch[1]) };
+            }
+
+            // Try "lat, lon" or "lat lon" or "lat;lon"
+            const parts = coordStr.split(/[,;\s]+/).map(s => s.trim()).filter(Boolean);
+            if (parts.length === 2) {
+                const a = parseFloat(parts[0]);
+                const b = parseFloat(parts[1]);
+                if (!isNaN(a) && !isNaN(b)) {
+                    // Heuristic: if |a| > 90, it's likely lon first
+                    if (Math.abs(a) > 90) {
+                        return { lat: b, lon: a };
+                    }
+                    return { lat: a, lon: b };
+                }
+            }
+
+            return null;
+        }
+
+        // ─── FETCH DATA ─────────────────────────────────────────────────────
+        async function fetchData() {
+            const response = await fetch(SPARQL_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/sparql-results+json'
+                },
+                body: 'query=' + encodeURIComponent(QUERY)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const json = await response.json();
+            return json.results.bindings;
+        }
+
+        // ─── TRANSFORM RESULTS ──────────────────────────────────────────────
+        function transformData(bindings) {
+            const placesMap = new Map(); // URI -> {id, name, lat, lon}
+            const flightData = [];       // [{from, to, monthIndex, flights}]
+            const monthsSet = new Set();
+
+            // First pass: collect all places and build month index
+            const months = [];
+
+            bindings.forEach(row => {
+                const month = row.flight_month?.value;
+                if (month) monthsSet.add(month);
+            });
+
+            // Sort months chronologically
+            const sortedMonths = [...monthsSet].sort();
+            const monthIndexMap = {};
+            sortedMonths.forEach((m, i) => { monthIndexMap[m] = i; });
+
+            // Second pass: build places and flight records
+            bindings.forEach(row => {
+                const month = row.flight_month?.value;
+                const flights = parseInt(row.number_flights?.value) || 0;
+                const fromURI = row.place_from?.value;
+                const toURI = row.place_to?.value;
+                const fromLabel = row.placeLabel_from?.value || fromURI;
+                const toLabel = row.placeLabel_to?.value || toURI;
+                const fromCoord = parseGeoCoord(row.geocoord_from?.value);
+                const toCoord = parseGeoCoord(row.geocoord_to?.value);
+
+                if (!month || !fromURI || !toURI || !fromCoord || !toCoord) return;
+
+                // Register places
+                if (!placesMap.has(fromURI)) {
+                    placesMap.set(fromURI, {
+                        id: fromURI,
+                        name: fromLabel,
+                        lat: fromCoord.lat,
+                        lon: fromCoord.lon
+                    });
+                }
+                if (!placesMap.has(toURI)) {
+                    placesMap.set(toURI, {
+                        id: toURI,
+                        name: toLabel,
+                        lat: toCoord.lat,
+                        lon: toCoord.lon
+                    });
+                }
+
+                const monthIdx = monthIndexMap[month];
+                if (monthIdx === undefined) return;
+
+                flightData.push({
+                    from: fromURI,
+                    to: toURI,
+                    monthIndex: monthIdx,
+                    flights: flights
+                });
+            });
+
+            return {
+                towns: [...placesMap.values()],
+                flightData,
+                sortedMonths
+            };
+        }
+
+        // ─── MAP SETUP ──────────────────────────────────────────────────────
+        const map = L.map('map').setView([48.5, 8.0], 4);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=cb1_303q_1_bbd7b50bd487cda10f64a3cd', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            maxZoom: 19
+        }).addTo(map);
+
+        // ─── CURVE GENERATOR ────────────────────────────────────────────────
+        function generateCurve(from, to, numPoints = 60) {
+            const lat1 = from.lat, lon1 = from.lon;
+            const lat2 = to.lat,   lon2 = to.lon;
+
+            const midLat = (lat1 + lat2) / 2;
+            const midLon = (lon1 + lon2) / 2;
+
+            const dx = lon2 - lon1;
+            const dy = lat2 - lat1;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist === 0) return [[lat1, lon1], [lat2, lon2]];
+
+            const offset = dist * 0.18;
+            const perpX = -dy / dist * offset;
+            const perpY =  dx / dist * offset;
+
+            const ctrlLat = midLat + perpY;
+            const ctrlLon = midLon + perpX;
+
+            const points = [];
+            for (let i = 0; i <= numPoints; i++) {
+                const t = i / numPoints;
+                const lat = (1-t)*(1-t)*lat1 + 2*(1-t)*t*ctrlLat + t*t*lat2;
+                const lon = (1-t)*(1-t)*lon1 + 2*(1-t)*t*ctrlLon + t*t*lon2;
+                points.push([lat, lon]);
+            }
+            return points;
+        }
+
+        // ─── STYLE HELPERS ──────────────────────────────────────────────────
+        function getWeight(f) {
+            if (f <= 5)  return 2;
+            if (f <= 10)  return 4;
+            if (f <= 20) return 7;
+            return 14;
+        }
+
+        function getColor(f) {
+            if (f <= 5)  return '#7fb3d5';
+            if (f <= 10)  return '#82c9a0';
+            if (f <= 20) return '#f0c27f';
+            return '#df6456';
+        }
+
+        function getMarkerRadius(total) {
+            if (total === 0)   return 3;
+            if (total <= 100)  return 5;
+            if (total <= 300)  return 8;
+            if (total <= 600)  return 11;
+            if (total <= 1200) return 14;
+            return 18;
+        }
+
+        // ─── GLOBAL STATE ───────────────────────────────────────────────────
+        let towns = [];
+        let flightData = [];
+        let sortedMonths = [];
+        let townById = {};
+
+        let flightLayer = L.layerGroup().addTo(map);
+        let townLayer = L.layerGroup().addTo(map);
+
+        const monthShort = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+        // ─── RENDER ─────────────────────────────────────────────────────────
+        function render(monthIndex) {
+            flightLayer.clearLayers();
+            townLayer.clearLayers();
+
+            const monthStr = sortedMonths[monthIndex] || '';
+            const year = parseInt(monthStr.substring(0, 4));
+            const month = parseInt(monthStr.substring(5, 7));
+
+            const monthData = flightData.filter(d => d.monthIndex === monthIndex);
+
+            // Town totals
+            const townTotals = {};
+            towns.forEach(t => townTotals[t.id] = 0);
+            monthData.forEach(d => {
+                townTotals[d.from] = (townTotals[d.from] || 0) + d.flights;
+                townTotals[d.to] = (townTotals[d.to] || 0) + d.flights;
+            });
+
+            // Draw arcs
+            monthData.forEach(({ from: fromId, to: toId, flights: count }) => {
+                const from = townById[fromId];
+                const to = townById[toId];
+                if (!from || !to) return;
+
+                const curve = generateCurve(from, to);
+                const line = L.polyline(curve, {
+                    color: getColor(count),
+                    weight: getWeight(count),
+                    opacity: 0.78,
+                    smoothFactor: 1
+                });
+                line.bindPopup(`<strong>${from.name} → ${to.name}</strong><br>${monthShort[month-1]} ${year}: <strong>${count}</strong> flights`);
+                flightLayer.addLayer(line);
+            });
+
+            // Draw town markers
+            towns.forEach(town => {
+                const total = townTotals[town.id] || 0;
+                const marker = L.circleMarker([town.lat, town.lon], {
+                    radius: getMarkerRadius(total),
+                    fillColor: total > 0 ? '#2c3e50' : '#bdc3c7',
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: total > 0 ? 0.9 : 0.4
+                });
+                marker.bindPopup(`<strong>${town.name}</strong><br>${monthShort[month-1]} ${year}: <strong>${total}</strong> flights`);
+                townLayer.addLayer(marker);
+            });
+
+            // Update info box
+            const totalFlights = monthData.reduce((s, d) => s + d.flights, 0);
+            document.getElementById('stat-routes').textContent = `Routes: ${monthData.length}`;
+            document.getElementById('stat-flights').textContent = `Total flights: ${totalFlights.toLocaleString()}`;
+            document.getElementById('date-label').textContent = `${monthShort[month-1]} ${year}`;
+        }
+
+        // ─── SLIDER & PLAY ──────────────────────────────────────────────────
+        const slider = document.getElementById('time-slider');
+        const playBtn = document.getElementById('play-btn');
+        let playing = false;
+        let interval = null;
+
+        slider.addEventListener('input', () => {
+            render(parseInt(slider.value));
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (playing) {
+                clearInterval(interval);
+                playing = false;
+                playBtn.textContent = '▶ Play';
+            } else {
+                playing = true;
+                playBtn.textContent = '⏸ Pause';
+                interval = setInterval(() => {
+                    let v = parseInt(slider.value) + 1;
+                    if (v > parseInt(slider.max)) v = 0;
+                    slider.value = v;
+                    render(v);
+                }, 1200);
+            }
+        });
+
+        // ─── INIT: FETCH & RENDER ───────────────────────────────────────────
+        async function init() {
+            const loadingEl = document.getElementById('loading');
+
+            try {
+                const bindings = await fetchData();
+
+                if (bindings.length === 0) {
+                    loadingEl.textContent = '⚠ No data returned from endpoint.';
+                    loadingEl.classList.add('error');
+                    return;
+                }
+
+                const result = transformData(bindings);
+                towns = result.towns;
+                flightData = result.flightData;
+                sortedMonths = result.sortedMonths;
+
+                if (towns.length === 0 || flightData.length === 0) {
+                    loadingEl.textContent = '⚠ Data retrieved but no valid routes found (check coordinate format).';
+                    loadingEl.classList.add('error');
+                    return;
+                }
+
+                // Build lookup map
+                townById = {};
+                towns.forEach(t => townById[t.id] = t);
+
+                // Fit map bounds to data
+                const bounds = L.latLngBounds(towns.map(t => [t.lat, t.lon]));
+                map.fitBounds(bounds.pad(0.1));
+
+                // Configure slider
+                slider.max = sortedMonths.length - 1;
+                slider.value = 0;
+
+                // Hide loading
+                loadingEl.style.display = 'none';
+
+                // Initial render
+                render(0);
+
+                console.log(`Loaded: ${towns.length} places, ${flightData.length} route-month records, ${sortedMonths.length} months (${sortedMonths[0]} → ${sortedMonths[sortedMonths.length-1]})`);
+
+            } catch (err) {
+                loadingEl.textContent = `✖ Error: ${err.message}`;
+                loadingEl.classList.add('error');
+                console.error(err);
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
