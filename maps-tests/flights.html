@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>European Air Routes 1930–1950</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; }
+        #map { height: calc(100vh - 70px); width: 100%; }
+
+        .timeline-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.15);
+        }
+        .timeline-bar label {
+            font-weight: 700;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .timeline-bar input[type="range"] {
+            flex: 1;
+            height: 6px;
+            cursor: pointer;
+        }
+        .timeline-bar .date-display {
+            font-size: 15px;
+            font-weight: 600;
+            min-width: 140px;
+            text-align: right;
+            color: #2c3e50;
+        }
+        .play-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 14px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .play-btn:hover { background: #34495e; }
+
+        .legend {
+            position: absolute;
+            bottom: 80px;
+            left: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            font-size: 12px;
+        }
+        .legend .line-sample {
+            display: inline-block;
+            width: 40px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .legend-item { margin: 4px 0; }
+
+        .info-box {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.92);
+            padding: 10px 14px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            font-size: 12px;
+            max-width: 220px;
+        }
+        .info-box h3 { font-size: 14px; margin-bottom: 4px; }
+        .info-box .stat { font-size: 13px; color: #555; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <div class="info-box">
+        <h3>European Air Routes</h3>
+        <div class="stat" id="stat-routes">Routes: —</div>
+        <div class="stat" id="stat-flights">Total flights: —</div>
+    </div>
+
+    <div class="legend">
+        <strong>Flights / month</strong>
+        <div class="legend-item"><span class="line-sample" style="border-top: 2px solid #e74c3c;"></span> 1–30</div>
+        <div class="legend-item"><span class="line-sample" style="border-top: 4px solid #e67e22;"></span> 31–80</div>
+        <div class="legend-item"><span class="line-sample" style="border-top: 7px solid #f1c40f;"></span> 81–180</div>
+        <div class="legend-item"><span class="line-sample" style="border-top: 10px solid #2ecc71;"></span> 181–350</div>
+        <div class="legend-item"><span class="line-sample" style="border-top: 14px solid #3498db;"></span> 350+</div>
+    </div>
+
+    <div class="timeline-bar">
+        <label>Time:</label>
+        <input type="range" id="time-slider" min="0" max="251" value="0" step="1">
+        <div class="date-display" id="date-label">Jan 1930</div>
+        <button class="play-btn" id="play-btn">▶ Play</button>
+    </div>
+
+    <script>
+        // ─── TOWNS ──────────────────────────────────────────────────────────
+        const towns = [
+            { id: "LON", name: "London",     lat: 51.51, lon: -0.13 },
+            { id: "PAR", name: "Paris",      lat: 48.86, lon: 2.35 },
+            { id: "ZRH", name: "Zurich",     lat: 47.46, lon: 8.55 },
+            { id: "GVA", name: "Geneva",     lat: 46.23, lon: 6.11 },
+            { id: "BSL", name: "Basel",      lat: 47.56, lon: 7.63 },
+            { id: "BER", name: "Berlin",     lat: 52.52, lon: 13.40 },
+            { id: "FRA", name: "Frankfurt",  lat: 50.11, lon: 8.68 },
+            { id: "AMS", name: "Amsterdam",  lat: 52.37, lon: 4.90 },
+            { id: "BRU", name: "Brussels",   lat: 50.85, lon: 4.35 },
+            { id: "ROM", name: "Rome",       lat: 41.90, lon: 12.50 },
+            { id: "MIL", name: "Milan",      lat: 45.46, lon: 9.19 },
+            { id: "VIE", name: "Vienna",     lat: 48.21, lon: 16.37 },
+            { id: "PRG", name: "Prague",     lat: 50.08, lon: 14.44 },
+            { id: "BCN", name: "Barcelona",  lat: 41.39, lon: 2.17 },
+            { id: "MAD", name: "Madrid",     lat: 40.42, lon: -3.70 },
+            { id: "COP", name: "Copenhagen", lat: 55.68, lon: 12.57 },
+            { id: "STO", name: "Stockholm",  lat: 59.33, lon: 18.07 },
+            { id: "ATH", name: "Athens",     lat: 37.98, lon: 23.73 },
+            { id: "IST", name: "Istanbul",   lat: 41.01, lon: 28.98 },
+            { id: "LIS", name: "Lisbon",     lat: 38.72, lon: -9.14 },
+        ];
+
+        // ─── ROUTE DEFINITIONS ──────────────────────────────────────────────
+        const routes = [
+            ["LON","PAR"], ["LON","AMS"], ["LON","BRU"], ["LON","ZRH"],
+            ["LON","BER"], ["LON","FRA"], ["LON","MAD"], ["LON","LIS"],
+            ["LON","COP"], ["LON","STO"], ["LON","ROM"],
+            ["PAR","BRU"], ["PAR","ZRH"], ["PAR","GVA"], ["PAR","MAD"],
+            ["PAR","BCN"], ["PAR","ROM"], ["PAR","MIL"], ["PAR","BER"],
+            ["ZRH","MIL"], ["ZRH","VIE"], ["ZRH","BER"], ["ZRH","FRA"],
+            ["ZRH","GVA"], ["ZRH","BSL"], ["ZRH","PRG"],
+            ["BER","VIE"], ["BER","PRG"], ["BER","COP"], ["BER","STO"],
+            ["AMS","BRU"], ["AMS","FRA"], ["AMS","COP"],
+            ["ROM","MIL"], ["ROM","ATH"], ["ROM","IST"],
+            ["VIE","PRG"], ["VIE","IST"], ["VIE","ATH"],
+            ["MAD","BCN"], ["MAD","LIS"],
+            ["MIL","BSL"], ["MIL","GVA"],
+            ["FRA","BRU"], ["FRA","VIE"],
+            ["COP","STO"], ["COP","BER"],
+            ["ATH","IST"],
+        ];
+
+        // ─── SYNTHETIC DATA GENERATION ──────────────────────────────────────
+        // Historical context:
+        // 1930-1939: gradual growth of European aviation
+        // 1940-1945: WWII — routes severely disrupted or suspended
+        // 1946-1950: rapid post-war recovery and expansion
+
+        function seededRandom(seed) {
+            let s = seed;
+            return function() {
+                s = (s * 16807 + 0) % 2147483647;
+                return (s - 1) / 2147483646;
+            };
+        }
+
+        const rand = seededRandom(42);
+
+        // Base popularity per route (some routes are inherently busier)
+        const routePopularity = {};
+        routes.forEach(([a, b], i) => {
+            routePopularity[a + "-" + b] = 20 + rand() * 80;
+        });
+
+        // Generate monthly data for 252 months (Jan 1930 – Dec 1950)
+        const flightData = []; // [{from, to, monthIndex, flights}]
+
+        for (let m = 0; m < 252; m++) {
+            const year = 1930 + Math.floor(m / 12);
+            const month = (m % 12) + 1;
+
+            routes.forEach(([fromId, toId]) => {
+                const key = fromId + "-" + toId;
+                const base = routePopularity[key];
+                let count = 0;
+
+                if (year <= 1939) {
+                    // 1930-1939: growth phase
+                    const yearProgress = (year - 1930) / 9;
+                    const growth = 0.3 + yearProgress * 0.7;
+                    // Seasonal variation
+                    const seasonal = 1 + 0.3 * Math.sin((month - 3) * Math.PI / 6);
+                    count = Math.round(base * growth * seasonal * (0.8 + rand() * 0.4));
+                }
+                else if (year <= 1945) {
+                    // 1940-1945: WWII disruption
+                    // Routes between neutral countries survive; others collapse
+                    const neutralPairs = ["ZRH","GVA","BSL","LIS","MAD","BCN","DUBL"];
+                    const isNeutral = neutralPairs.includes(fromId) && neutralPairs.includes(toId);
+
+                    if (isNeutral) {
+                        // Neutral routes still operate but reduced
+                        count = Math.round(base * 0.3 * (0.7 + rand() * 0.3));
+                    } else {
+                        // War years: near-zero for most routes
+                        // Some military-adjacent corridors have minimal service
+                        const warFactor = year <= 1942 ? 0.05 : (year <= 1943 ? 0.08 : 0.12);
+                        count = Math.round(base * warFactor * rand());
+                        // Some routes completely suspended
+                        if (rand() < 0.7) count = 0;
+                    }
+                }
+                else {
+                    // 1946-1950: post-war recovery
+                    const recovery = (year - 1945) / 5; // 0.2 to 1.0
+                    const seasonal = 1 + 0.3 * Math.sin((month - 3) * Math.PI / 6);
+                    // Post-war boom exceeds pre-war levels
+                    const boomFactor = 1.0 + recovery * 0.8;
+                    count = Math.round(base * boomFactor * seasonal * (0.85 + rand() * 0.3));
+                }
+
+                if (count > 0) {
+                    flightData.push({ from: fromId, to: toId, monthIndex: m, flights: count });
+                }
+            });
+        }
+
+        // ─── MAP SETUP ──────────────────────────────────────────────────────
+        const map = L.map('map').setView([48.5, 8.0], 4);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=cb1_303q_1_bbd7b50bd487cda10f64a3cd', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            maxZoom: 19
+        }).addTo(map);
+
+        // ─── CURVE GENERATOR ────────────────────────────────────────────────
+        function generateCurve(from, to, numPoints = 60) {
+            const lat1 = from.lat, lon1 = from.lon;
+            const lat2 = to.lat,   lon2 = to.lon;
+
+            const midLat = (lat1 + lat2) / 2;
+            const midLon = (lon1 + lon2) / 2;
+
+            const dx = lon2 - lon1;
+            const dy = lat2 - lat1;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            const offset = dist * 0.18;
+            const perpX = -dy / dist * offset;
+            const perpY =  dx / dist * offset;
+
+            const ctrlLat = midLat + perpY;
+            const ctrlLon = midLon + perpX;
+
+            const points = [];
+            for (let i = 0; i <= numPoints; i++) {
+                const t = i / numPoints;
+                const lat = (1-t)*(1-t)*lat1 + 2*(1-t)*t*ctrlLat + t*t*lat2;
+                const lon = (1-t)*(1-t)*lon1 + 2*(1-t)*t*ctrlLon + t*t*lon2;
+                points.push([lat, lon]);
+            }
+            return points;
+        }
+
+        // ─── STYLE HELPERS ──────────────────────────────────────────────────
+        function getWeight(f) {
+            if (f <= 30)  return 2;
+            if (f <= 80)  return 4;
+            if (f <= 180) return 7;
+            if (f <= 350) return 10;
+            return 14;
+        }
+
+        function getColor(f) {
+            if (f <= 30)  return '#e74c3c';
+            if (f <= 80)  return '#e67e22';
+            if (f <= 180) return '#f1c40f';
+            if (f <= 350) return '#2ecc71';
+            return '#3498db';
+        }
+
+        function getMarkerRadius(total) {
+            if (total === 0)   return 3;
+            if (total <= 100)  return 5;
+            if (total <= 300)  return 8;
+            if (total <= 600)  return 11;
+            if (total <= 1200) return 14;
+            return 18;
+        }
+
+        // ─── RENDER ─────────────────────────────────────────────────────────
+        let flightLayer = L.layerGroup().addTo(map);
+        let townLayer = L.layerGroup().addTo(map);
+
+        const monthShort = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+        function render(monthIndex) {
+            flightLayer.clearLayers();
+            townLayer.clearLayers();
+
+            const year = 1930 + Math.floor(monthIndex / 12);
+            const month = (monthIndex % 12) + 1;
+
+            const monthData = flightData.filter(d => d.monthIndex === monthIndex);
+
+            // Town totals
+            const townTotals = {};
+            towns.forEach(t => townTotals[t.id] = 0);
+            monthData.forEach(d => {
+                townTotals[d.from] += d.flights;
+                townTotals[d.to] += d.flights;
+            });
+
+            // Draw arcs
+            monthData.forEach(({ from: fromId, to: toId, flights: count }) => {
+                const from = towns.find(t => t.id === fromId);
+                const to = towns.find(t => t.id === toId);
+                if (!from || !to) return;
+
+                const curve = generateCurve(from, to);
+                const line = L.polyline(curve, {
+                    color: getColor(count),
+                    weight: getWeight(count),
+                    opacity: 0.78,
+                    smoothFactor: 1
+                });
+                line.bindPopup(`<strong>${from.name} ↔ ${to.name}</strong><br>${monthShort[month-1]} ${year}: <strong>${count}</strong> flights`);
+                flightLayer.addLayer(line);
+            });
+
+            // Draw town markers
+            towns.forEach(town => {
+                const total = townTotals[town.id];
+                const marker = L.circleMarker([town.lat, town.lon], {
+                    radius: getMarkerRadius(total),
+                    fillColor: total > 0 ? '#2c3e50' : '#bdc3c7',
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: total > 0 ? 0.9 : 0.4
+                });
+                marker.bindPopup(`<strong>${town.name}</strong><br>${monthShort[month-1]} ${year}: <strong>${total}</strong> flights`);
+                townLayer.addLayer(marker);
+            });
+
+            // Update info box
+            const totalFlights = monthData.reduce((s, d) => s + d.flights, 0);
+            document.getElementById('stat-routes').textContent = `Routes: ${monthData.length}`;
+            document.getElementById('stat-flights').textContent = `Total flights: ${totalFlights.toLocaleString()}`;
+            document.getElementById('date-label').textContent = `${monthShort[month-1]} ${year}`;
+        }
+
+        // ─── SLIDER & PLAY ──────────────────────────────────────────────────
+        const slider = document.getElementById('time-slider');
+        const playBtn = document.getElementById('play-btn');
+        let playing = false;
+        let interval = null;
+
+        slider.addEventListener('input', () => {
+            render(parseInt(slider.value));
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (playing) {
+                clearInterval(interval);
+                playing = false;
+                playBtn.textContent = '▶ Play';
+            } else {
+                playing = true;
+                playBtn.textContent = '⏸ Pause';
+                interval = setInterval(() => {
+                    let v = parseInt(slider.value) + 1;
+                    if (v > 251) v = 0;
+                    slider.value = v;
+                    render(v);
+                }, 120);
+            }
+        });
+
+        // Initial render
+        render(0);
+    </script>
+</body>
+</html>

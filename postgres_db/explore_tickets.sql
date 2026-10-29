@@ -114,7 +114,7 @@ end) income, ft.origin_uri, ft.destination_uri
 from borders.flight_ticket ft 
 group by ft.origin, ft.destination, ft.valid_date_exact_or_from, ft.origin_uri, ft.destination_uri
 order by flight_date, ft.origin, ft.destination)
-UNION
+union ALL
 --inbound
 (with tw1 as (
 select ft.destination as origin, ft.origin as destination,
@@ -154,7 +154,7 @@ end) income, ft.origin_uri, ft.destination_uri
 from borders.flight_ticket ft 
 group by ft.origin, ft.destination, ft.valid_date_exact_or_from, ft.origin_uri, ft.destination_uri
 order by flight_date, ft.origin, ft.destination)
-UNION
+union ALL
 --inbound
 (with tw1 as (
 select ft.destination as origin, ft.origin as destination,
@@ -177,6 +177,8 @@ from tw1
 group by tw1.origin, tw1.destination, tw1.flight_date, tw1.origin_uri, tw1.destination_uri))
 select row_number() OVER (ORDER BY 1)::INTEGER as id_flight, tw1.*
 from tw1
+where length(tw1.origin_uri) > 5
+and length(tw1.destination_uri) > 5
 order by flight_date, origin, destination;
 
 
@@ -195,7 +197,8 @@ select destination, string_agg(distinct destination_uri, '-'), count(*) as num
 from borders.v_flights
 group by destination, destination_uri;
 
-
+select count(*)
+from borders.v_flights;
 
 
 /*
